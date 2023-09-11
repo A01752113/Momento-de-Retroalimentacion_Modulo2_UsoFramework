@@ -12,7 +12,8 @@ import numpy as np
 
 
 # Cargar el conjunto de datos iris.csv
-data = pd.read_csv('iris.csv')
+file=input("Introduzca la ruta donde tiene gurdado el archivo: ")
+data = pd.read_csv(file)
 
 # Separar características (X) y etiquetas (y)
 X = data.drop(['_id', 'Species'], axis=1)
