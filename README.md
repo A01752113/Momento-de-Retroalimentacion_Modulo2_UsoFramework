@@ -16,3 +16,19 @@ Entregable: Uso de framework o biblioteca de aprendizaje máquina para la implem
 
 4.- Tu implementación debe de poder correr por separado solamente con un compilador, no debe de depender de un IDE o de un “notebook”. Por ejemplo, si programas en Python, tu implementación final se espera que esté en un archivo .py no en un Jupyter Notebook.
 
+# Análisis y Reporte sobre el desempeño del modelo.
+
+Escoge una de las 2 implementaciones que tengas y genera un análisis sobre su desempeño en un set de datos. Este análisis lo deberás documentar en un reporte con indicadores claros y gráficas comparativas que respalden tu análisis.
+
+El análisis debe de contener los siguientes elementos:
+
+1.- Separación y evaluación del modelo con un conjunto de prueba y un conjunto de validación (Train/Test/Validation).
+
+2.- Diagnóstico y explicación el grado de bias o sesgo: bajo medio alto
+
+3.- Diagnóstico y explicación el grado de varianza: bajo medio alto
+
+4.- Diagnóstico y explicación el nivel de ajuste del modelo: underfitt fitt overfitt
+
+5.- Basándote en lo encontrado en tu análisis utiliza técnicas de regularización o ajuste de parámetros para mejorar el desempeño de tu modelo y documenta en tu reporte cómo mejoró este.
+
