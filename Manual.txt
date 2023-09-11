@@ -1,0 +1,4 @@
+Utilizar el archivo iris.csv
+Al ejecutar el programa se solicita al usuario introducir la ruta donde esta guardado el archivo csv y regresa
+la tabla de desempeño del modelo con el accuracy, la precision, el recall y f1-score.
+Además imprime la curva de aprendizaje y la matriz de confusión.
