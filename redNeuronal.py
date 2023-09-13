@@ -60,7 +60,7 @@ print_conjunto(X_validation, "Conjunto de validacion (Validation):")
 multicapa (red neuronal) de la biblioteca scikit-learn. Se configura con dos capas ocultas, 
 cada una con 10 neuronas, el entrenamiento se detendrá después de un máximo de 1000 épocas. 
 Luego, se entrena la red neuronal con los datos de entrenamiento (X_train y y_train) utilizando el método fit"""
-clasificador_red = MLPClassifier(hidden_layer_sizes=(11, 11), max_iter=7000,alpha=0.5, random_state=42) #(10, 10) (11,11)
+clasificador_red = MLPClassifier(hidden_layer_sizes=(11, 11), max_iter=1000,alpha=0.05, random_state=42) #(10, 10) (11,11)
 clasificador_red.fit(X_train, y_train)
 
 # Realizar predicciones en el conjunto de prueba
