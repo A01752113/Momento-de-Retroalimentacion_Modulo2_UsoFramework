@@ -32,14 +32,35 @@ y = label_encoder.fit_transform(y)
 conjunto de datos en dos subconjuntos: uno para entrenamiento (X_train y y_train) y otro para 
 prueba (X_test y y_test). La opción test_size especifica la proporción del conjunto de datos 
 que se utilizará para pruebas"""
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Dividir el conjunto de datos en entrenamiento (80%) y prueba (20%)
+X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Dividir el conjunto de datos de prueba en prueba (10%) y validación (10%)
+X_test, X_validation, y_test, y_validation = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+
+
+# Función para imprimir una matriz del conjunto de datos train, test y validation
+def print_conjunto(matriz, titulo):
+    print(titulo)
+    matrix = np.array(matriz)
+    print(matriz[:5])  # Imprimir solo las primeras 5 filas
+    print("Shape:", matriz.shape)
+    print()
+
+# Imprimir matrices de 5 filas para los 3 conjuntos de datos
+print_conjunto(X_train, "Conjunto de Entrenamiento (Train):")
+print_conjunto(X_test, "Conjunto de prueba (Test):")
+print_conjunto(X_validation, "Conjunto de validacion (Validation):")
+
+
 
 # Crear y entrenar una red neuronal
 """Se utiliza MLPClassifier, que es un clasificador de perceptrón 
 multicapa (red neuronal) de la biblioteca scikit-learn. Se configura con dos capas ocultas, 
 cada una con 10 neuronas, el entrenamiento se detendrá después de un máximo de 1000 épocas. 
 Luego, se entrena la red neuronal con los datos de entrenamiento (X_train y y_train) utilizando el método fit"""
-clasificador_red = MLPClassifier(hidden_layer_sizes=(11, 11), max_iter=1000, random_state=42) #(10, 10)
+clasificador_red = MLPClassifier(hidden_layer_sizes=(11, 11), max_iter=7000,alpha=0.5, random_state=42) #(10, 10) (11,11)
 clasificador_red.fit(X_train, y_train)
 
 # Realizar predicciones en el conjunto de prueba
@@ -126,7 +147,7 @@ else:
     print("El modelo tiene buen equilibrio entre el bias y la varianza por lo que existe fitt")
 
 
-# Crear un gráfico de calor (heatmap) de la matriz de confusión usando la funcion de seaborn de heatmap
+"""# Crear un gráfico de calor (heatmap) de la matriz de confusión usando la funcion de seaborn de heatmap
 plt.figure(figsize=(8, 6))
 sns.set(font_scale=1.2)  
 sns.heatmap(confusion, annot=True, fmt='g', cmap='Blues', cbar=False,
@@ -137,14 +158,103 @@ plt.title('Matriz de Confusión')
 #plt.show()
 
 
-# Plotea las curvas de aprendizaje para evaluar sesgo y varianza
+# Plotea las curvas de aprendizaje para evaluar el sesgo (bias) en los conjuntos de datos
 plt.figure(figsize=(10, 6))
 plt.plot(train_sizes, train_mean, marker='o', label='Entrenamiento')
 plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.15)
-plt.plot(train_sizes, test_mean, marker='o', label='Validación')
+plt.plot(train_sizes, test_mean, marker='o', label='Prueba')
 plt.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.15)
 plt.xlabel('Tamaño del conjunto de entrenamiento')
 plt.ylabel('Precisión')
 plt.legend()
-plt.title('Curvas de Aprendizaje')
+plt.title('Curvas de Sesgo (Bias) en los Conjuntos de Datos')
+#plt.show()
+
+# Plotea las curvas de aprendizaje para evaluar la varianza en los conjuntos de datos
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, train_std, marker='o', label='Entrenamiento')
+plt.plot(train_sizes, test_std, marker='o', label='Prueba')
+plt.xlabel('Tamaño del conjunto de entrenamiento')
+plt.ylabel('Desviación Estándar')
+plt.legend()
+plt.title('Curvas de Varianza en los Conjuntos de Datos')
+
+
+# Plotea las curvas de sesgo (bias) y varianza en los conjuntos de datos
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, train_mean, marker='o', label='Entrenamiento (Bias)')
+plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.15)
+plt.plot(train_sizes, test_std, marker='o', label='Prueba (Varianza)')
+plt.xlabel('Tamaño del conjunto de entrenamiento')
+plt.ylabel('Desempeño')
+plt.legend()
+plt.title('Nivel de Ajuste del Modelo (Bias vs. Varianza)')
+
+plt.show()"""
+
+
+# Crear una figura con subplots
+fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+
+# Gráfico de calor (Matriz de Confusión)
+sns.set(font_scale=1.2)
+sns.heatmap(confusion, annot=True, fmt='g', cmap='Blues', cbar=False,
+            xticklabels=label_encoder.classes_, yticklabels=label_encoder.classes_, ax=axes[0, 0])
+axes[0, 0].set_xlabel('Predicciones')
+axes[0, 0].set_ylabel('Etiquetas verdaderas')
+axes[0, 0].set_title('Matriz de Confusión')
+
+# Curvas de Sesgo (Bias)
+axes[0, 1].plot(train_sizes, train_mean, marker='o', label='Entrenamiento')
+axes[0, 1].fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.15)
+axes[0, 1].plot(train_sizes, test_mean, marker='o', label='Prueba')
+axes[0, 1].fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.15)
+axes[0, 1].set_xlabel('Tamaño del conjunto de entrenamiento')
+axes[0, 1].set_ylabel('Precisión')
+axes[0, 1].legend()
+axes[0, 1].set_title('Curvas de Sesgo (Bias) en los Conjuntos de Datos')
+
+# Curvas de Varianza
+axes[1, 0].plot(train_sizes, train_std, marker='o', label='Entrenamiento')
+axes[1, 0].plot(train_sizes, test_std, marker='o', label='Prueba')
+axes[1, 0].set_xlabel('Tamaño del conjunto de entrenamiento')
+axes[1, 0].set_ylabel('Desviación Estándar')
+axes[1, 0].legend()
+axes[1, 0].set_title('Curvas de Varianza en los Conjuntos de Datos')
+
+# Nivel de Ajuste del Modelo (Bias vs. Varianza)
+axes[1, 1].plot(train_sizes, train_mean, marker='o', label='Entrenamiento (Bias)')
+axes[1, 1].fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.15)
+axes[1, 1].plot(train_sizes, test_std, marker='o', label='Prueba (Varianza)')
+axes[1, 1].set_xlabel('Tamaño del conjunto de entrenamiento')
+axes[1, 1].set_ylabel('Desempeño')
+axes[1, 1].legend()
+axes[1, 1].set_title('Nivel de Ajuste del Modelo (Bias vs. Varianza)')
+
+# Ajustar el espacio entre subplots
+plt.tight_layout()
+
+# Mostrar el plot
 plt.show()
+
+
+"""Mejoras usando Regularizacion"""
+#En MLPClassifier de scikit-learn, se puede usar el parámetro alpha, 
+# que controla la regularización L2 (también conocida como regularización de peso) en la red neuronal. 
+
+# Crear y entrenar una red neuronal con regularización L2
+clasificador_red_regularizado = MLPClassifier(hidden_layer_sizes=(2, 2), max_iter=7000, alpha=1, random_state=42)
+clasificador_red_regularizado.fit(X_train, y_train)
+
+# Realizar predicciones en el conjunto de prueba
+y_pred_regularizado = clasificador_red_regularizado.predict(X_test)
+
+# Calcular las métricas de desempeño con regularización
+report_regularizado = classification_report(y_test, y_pred_regularizado)
+confusion_regularizado = confusion_matrix(y_test, y_pred_regularizado)
+
+# Mostrar los resultados con regularización
+print("\nMatriz de Confusión con Regularización:\n", confusion_regularizado)
+print("\nClassification report con Regularización: ")
+print(report_regularizado)
+
