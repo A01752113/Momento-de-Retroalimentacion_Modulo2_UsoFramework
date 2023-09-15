@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 import matplotlib.pyplot as plt
 from sklearn.model_selection import learning_curve
 from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import MinMaxScaler
 import seaborn as sns
 import numpy as np
 
@@ -40,6 +41,12 @@ X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.2, random_
 X_test, X_validation, y_test, y_validation = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
 
 
+# Normalizar los datos con MinMaxScaler
+scaler = MinMaxScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+X_validation = scaler.transform(X_validation)
+
 # Función para imprimir una matriz del conjunto de datos train, test y validation
 def print_conjunto(matriz, titulo):
     print(titulo)
@@ -60,7 +67,15 @@ print_conjunto(X_validation, "Conjunto de validacion (Validation):")
 multicapa (red neuronal) de la biblioteca scikit-learn. Se configura con dos capas ocultas, 
 cada una con 10 neuronas, el entrenamiento se detendrá después de un máximo de 1000 épocas. 
 Luego, se entrena la red neuronal con los datos de entrenamiento (X_train y y_train) utilizando el método fit"""
-clasificador_red = MLPClassifier(hidden_layer_sizes=(11, 11), max_iter=1000,alpha=0.05, random_state=42) #(10, 10) (11,11)
+clasificador_red = MLPClassifier(hidden_layer_sizes=(650, 650), 
+                                 max_iter=7000, 
+                                 alpha=0.0001, 
+                                 solver='adam', 
+                                 random_state=42, 
+                                 early_stopping=True, 
+                                 validation_fraction=0.2, 
+                                 n_iter_no_change=10) #(10, 10) (11,11)
+
 clasificador_red.fit(X_train, y_train)
 
 # Realizar predicciones en el conjunto de prueba
